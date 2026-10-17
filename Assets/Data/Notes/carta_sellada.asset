@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aee9292b06ac9d045a0710e95a0c7c46, type: 3}
+  m_Name: carta_sellada
+  m_EditorClassIdentifier: Assembly-CSharp::NoteData
+  id: carta_sellada
+  title: Carta sellada
+  body: "La carta tiene el sello de la hacienda roto.\n\n<b>Si alguien lee esto, sepa que mi padre no levant\xF3 esta hacienda con trabajo. Hizo un acuerdo con un jinete vestido de negro que lleg\xF3 una noche por el camino de los establos. Parti\xF3 el medall\xF3n en dos: una mitad qued\xF3 con la familia y la otra aqu\xED, con \xE9l.\n\nEl resto del acuerdo lo guard\xF3 en los establos. Si quiere salir de aqu\xED, tendr\xE1 que cruzarlos.</b>\n\n\u2014 Aurelio de la Vega\n\nSiguiente: sube por la escalera al fondo de esta c\xE1mara."
+  isClue: 0

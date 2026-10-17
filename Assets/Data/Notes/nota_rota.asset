@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aee9292b06ac9d045a0710e95a0c7c46, type: 3}
+  m_Name: nota_rota
+  m_EditorClassIdentifier: Assembly-CSharp::NoteData
+  id: nota_rota
+  title: Nota rota
+  body: "...no fue el agua lo que la mat\xF3, fue la pena.\n\nCada noche vuelve a buscar a sus hijos. Remedios dice el segundo paso del aljibe:\n<b>LUEGO, la luna que la vio llorar</b>...\n\n(El resto del papel est\xE1 quemado. Busca la tercera pista cerca del aljibe.)"
+  isClue: 1

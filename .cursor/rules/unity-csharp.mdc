@@ -1,0 +1,35 @@
+---
+description: Convenciones de C# para los scripts de Unity de Ecos del Mictlán
+globs: **/*.cs
+alwaysApply: false
+---
+
+# Convenciones de scripts C# (Unity)
+
+- Un `MonoBehaviour` por archivo; el nombre de la clase coincide con el archivo (`PlayerMovement.cs` → `PlayerMovement`).
+- Ubicar en `Assets/Scripts/Player`, `Enemies`, `Gameplay` o `UI` según su responsabilidad.
+- Campos configurables: `[SerializeField] private`, no `public`. Usar `[Header]` y `[Tooltip]` para el Inspector.
+- Input: solo `UnityEngine.InputSystem` (el proyecto tiene desactivada la API antigua `Input`). Leer siempre a través de `GameInput.Instance` (Move, Interact, Sprint, Hide, Flashlight, Pause); para una tecla nueva, añadir la acción al asset `InputSystem_Actions` y exponerla en `GameInput`.
+- Unity 6: usar `Rigidbody2D.linearVelocity` (no `velocity`, obsoleto) y `FindFirstObjectByType` (no `FindObjectOfType`).
+- Física en `FixedUpdate` (`Rigidbody2D.MovePosition` / `linearVelocity`); lectura de input en `Update`.
+- Cachear componentes en `Awake` con `GetComponent`; nunca `GetComponent` ni `Find` en `Update`.
+- Comunicación entre sistemas con eventos (`System.Action` / `UnityEvent`) en lugar de referencias cruzadas rígidas.
+- Interactuables heredan de la clase base `Interactable` (`GetPrompt()`, `CanInteract`, `Interact(InteractionController)`) y tienen un `Collider2D` trigger propio o en un hijo.
+- Acceso a sistemas globales por sus singletons (`GameInput`, `UIManager`, `LevelManager`, `InventoryManager`, `ClueManager`, `AudioManager`, `CheckpointManager`) usando `?.` para tolerar escenas sin ellos.
+- El progreso se comunica con banderas: `LevelManager.Instance.SetFlag("id")`; puertas, notas y acertijos activan o esperan banderas.
+- IDs de objetos, notas y pistas como `string` constantes o `ScriptableObject`, no textos visibles.
+- Textos visibles para el jugador en español; nombres de código en inglés como en la tabla de scripts del diseño.
+
+```csharp
+// ❌ Mal: API antigua (lanza excepción en este proyecto) y GetComponent por frame
+public float speed;
+void Update() { GetComponent<Rigidbody2D>().velocity = new Vector2(Input.GetAxisRaw("Horizontal"), 0) * speed; }
+
+// ✅ Bien (ver PlayerMovement.cs)
+[SerializeField] private float walkSpeed = 3.5f;
+private Rigidbody2D rb;
+private Vector2 input;
+void Awake() => rb = GetComponent<Rigidbody2D>();
+void Update() => input = GameInput.Instance != null ? GameInput.Instance.Move : Vector2.zero;
+void FixedUpdate() => rb.linearVelocity = input * walkSpeed;
+```

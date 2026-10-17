@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aee9292b06ac9d045a0710e95a0c7c46, type: 3}
+  m_Name: diario_sacristan
+  m_EditorClassIdentifier: Assembly-CSharp::NoteData
+  id: diario_sacristan
+  title: "Diario del sacrist\xE1n"
+  body: "3 de noviembre de 1911.\n\nDon Ignacio mand\xF3 sellar su c\xE1mara con cuatro s\xEDmbolos: sol, luna, espiral y calavera.\n\nMe hizo repetir:\n<b>El SOL abre la c\xE1mara y la CALAVERA la cierra.</b>\n\nLo de en medio lo dej\xF3 escrito el capell\xE1n (mira la otra hoja de esta mesa).\n\nEn la cripta: camina, no corras. Las cadenas hacen ruido y algo oye todo."
+  isClue: 1

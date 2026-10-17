@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aee9292b06ac9d045a0710e95a0c7c46, type: 3}
+  m_Name: registro_hacienda
+  m_EditorClassIdentifier: Assembly-CSharp::NoteData
+  id: registro_hacienda
+  title: Registro de la hacienda
+  body: "Registro de peones, 1898 \u2013 1911.\n\nCada a\xF1o falta alguien despu\xE9s del D\xEDa de Muertos: <b>Se fue por el camino de los establos</b>.\n\nPara romper el acuerdo ficticio del jinete necesitas tres documentos:\n\n1) Este registro (ya lo tienes).\n2) La carta del pacto \u2014 en la paja de una caballeriza al NORTE. Solo se ve con la linterna (F).\n3) La nota del caballerango \u2014 en los TROJES (pasillo entre caballerizas y estos cuartos).\n\nTambi\xE9n aqu\xED: abre el ARCHIVERO para la llave del cuarto de herramientas (puerta vecina, m\xE1s al sur).\nLa PALANCA del port\xF3n est\xE1 al fondo OESTE de las caballerizas; hace falta la barreta."
+  isClue: 1

@@ -1,0 +1,68 @@
+---
+description: Estructura base y reglas de diseño del juego Ecos del Mictlán (Unity 2D, terror top-down)
+alwaysApply: true
+---
+
+# Ecos del Mictlán — Reglas base
+
+El documento de diseño completo está en `docs/DISENO_ECOS_DEL_MICTLAN.md`. Léelo antes de crear niveles, sistemas o scripts nuevos, y mantenlo actualizado si el diseño cambia.
+
+## Proyecto
+- Unity 2D, vista top-down. Exploración, terror y acertijos en una hacienda mexicana abandonada.
+- 3 niveles: `Nivel1_Aljibe` (La Llorona), `Nivel2_Cripta` (momia ficticia, sistema de ruido), `Nivel3_Establos` (Charro Negro, linterna con batería). Más escenas `Menu` y `Victoria`. Game Over es un panel dentro de cada nivel (permite reintentar desde el punto de control conservando el progreso).
+- Toda historia, ritual o pacto es ficticio; no presentarlo como tradición o hecho real.
+- Se gana sobreviviendo y escapando, nunca derrotando al enemigo.
+- Comunicación con el usuario y textos del juego en español.
+
+## Configuración real del proyecto
+- Unity `6000.6.0f1` (Unity 6.6), plantilla 2D con **URP 2D** ya activo (`Assets/Settings/UniversalRP.asset`, `Renderer2D.asset`): `Light2D` disponible.
+- **Input System nuevo únicamente** (`activeInputHandler: 1`). Prohibido usar `UnityEngine.Input` (API antigua). Acciones en `Assets/Settings/InputSystem_Actions.inputactions` (mapa `Player`: Move, Interact, Sprint, Crouch...).
+- Paquetes presentes: 2D Animation, Aseprite, PSD Importer, SpriteShape, Tilemap + Tilemap Extras, uGUI, Timeline. Cinemachine **no** está instalado (usar script de cámara propio salvo que se decida instalarlo).
+- Enter Play Mode **sin recarga de dominio**: todo estado estático debe reiniciarse en `Awake`/`OnDestroy` y los eventos estáticos (p. ej. `NoiseSystem.OnNoise`) desuscribirse en `OnDisable`.
+- Acciones añadidas al mapa `Player`: `Hide` (Q), `Flashlight` (F), `Pause` (Esc), `Inventory` (I / Tab). `Interact` es pulsación simple (sin Hold). Se leen a través de `GameInput.Instance`.
+- Inventario: panel estilo cuaderno (`InventoryUI`, tecla I). El HUD solo muestra el aviso «I — Inventario»; no listar IDs internos al jugador.
+- Fotografías examinables: `PhotoInspectable` + `PhotoInspectUI` (frente/reverso, voltear con E). Arte en `Assets/Art/Objects/FotoCatalina_*.jpg`.
+- Animaciones Nivel 1: `EcosAnimationFactory` genera frames + controllers en `Assets/Art/Animations/` (Player, Llorona, Door). Parámetros jugador/enemigo: `MoveX`, `MoveY`, `Speed`; puertas: trigger `Open`.
+- UI con `UnityEngine.UI.Text` y la fuente integrada `LegacyRuntime.ttf` (TextMeshPro no está importado).
+- `SampleScene` y `Assets/Welcome` son de la plantilla y no forman parte del juego.
+
+## Escenas generadas por código
+- Menú **Ecos del Mictlán → Construir todo el juego** (`EcosLevelBuilder.BuildAll`) genera sprites, tiles, sonidos, notas, prefabs, las escenas `Menu`, `Nivel1_Aljibe`, `Nivel2_Cripta`, `Nivel3_Establos`, `Victoria` y los Build Settings. También hay **Construir solo menú y victoria / el Nivel 1/2/3**. Volver a ejecutarlo **sobrescribe** esas escenas: los cambios de diseño se hacen en los constructores (`EcosLevel1/2/3Builder`, `EcosMenuBuilder`, piezas comunes en `EcosLevelKit`, recursos en `EcosAssetFactory`), o se dejan de usar cuando se pase a editar escenas a mano (avisar al usuario antes).
+- `EcosAssetFactory` actualiza tiles y notas existentes en lugar de borrarlos (conserva GUIDs).
+- Muros: el `CompositeCollider2D` solo genera geometría si `compositeOperation = Merge` se asigna **después** de pintar los tiles (ya resuelto en `EcosLevelKit.BuildTilemaps`; no reordenar).
+- `Assets/Editor/EcosSmokeTest.cs` (menú **Prueba automática del Nivel 1/2/3** y **de los tres niveles**) recorre cada nivel en Play y verifica el progreso completo, que los muros bloquean y que las patrullas no los atraviesan. Ejecutarla tras cambiar sistemas o niveles.
+- **Compilar para Windows** (`EcosLevelBuilder.BuildWindows`) genera `Builds/Windows/EcosDelMictlan.exe`.
+- Se puede compilar fuera del editor con el Roslyn de Unity (`Editor/Data/DotNetSdk/.../csc.dll`) y ejecutar en batch (`Unity.exe -batchmode -projectPath ... -executeMethod EcosLevelBuilder.BuildAll -quit`, `EcosSmokeTest.Run -ecosLevel 0|1|2|3`, `EcosLevelBuilder.BuildWindows`) solo si el editor está cerrado.
+
+## Progreso entre niveles
+- `GameProgress` guarda en `PlayerPrefs` el nivel alcanzado y los objetos que pasan de nivel (`carryOverItems` del `LevelManager`); sin estado estático en memoria. Menú: Nueva partida / Continuar. Al terminar el juego se borra la partida.
+- Progreso dentro del nivel por banderas (`LevelManager.SetFlag/HasFlag/OnFlagSet`); las notas activan una bandera con su `Id`.
+- Enemigos que deben rodear obstáculos usan `NavGraph` (nodos colocados en el constructor); la visibilidad usa `LineOfSight`.
+
+## Carpetas
+`Assets/Scenes`, `Assets/Scripts/{Player,Enemies,Gameplay,UI}`, `Assets/Art/{Characters,Environment,Objects,Tiles}`, `Assets/Audio/{Music,SFX,Ambience}`, `Assets/Prefabs/{Player,Doors,Notes,Keys,Enemies,Candles,Checkpoints}`, `Assets/UI/{Sprites,Fonts,Icons}`.
+
+## Mecánicas fijas
+- Movimiento: WASD/flechas, 8 direcciones normalizadas, 3–4 u/s, `Rigidbody2D` con gravedad 0, rotación Z congelada, Interpolate.
+- Interacción: tecla `E`, triggers `Collider2D`, solo el objeto más cercano/prioritario; mensaje tipo `E — Leer carta`.
+- Esconderse: tecla `Q` solo en `HidingSpot` válido.
+- Inventario por identificadores (`llave_oficina`, `simbolo_luna`), nunca por nombre visible.
+- 3 vidas; daño → invulnerabilidad ~1.5 s; nunca quitar vida por fotograma; 0 vidas → Game Over; reaparición en checkpoint.
+- Acertijos reiniciables sin reiniciar el nivel; una activación válida por placa por intento; el orden se deduce de las pistas.
+- Puertas con estados: Cerrada, Abierta, BloqueadaPorLlave, BloqueadaPorObjetivo, Abriendo. Si no cumple el requisito, muestra el motivo.
+- Ruido (nivel 2): evento con posición + intensidad; el enemigo compara con su radio. Sin ondas físicas.
+- Luz (nivel 3): batería que se consume; el efecto sobre el Charro Negro es breve y con cooldown.
+
+## Enemigos
+Una sola máquina de estados reutilizable: Patrullar → Detectar (jugador/ruido) → Perseguir/Investigar → Atacar o Perder rastro → Patrullar. Las entidades difieren solo en parámetros (detección, velocidad, búsqueda, vulnerabilidades). No atraviesan paredes.
+
+## Arquitectura
+- Scripts con responsabilidad única (ver tabla en el documento de diseño, sección 9).
+- `LevelManager` coordina objetivos y transiciones; puertas, enemigos y acertijos controlan su propio comportamiento.
+- Objetos repetibles como Prefabs. Decoración pequeña sin colisión.
+- HUD discreto: corazones arriba-izq, objetivo arriba-centro, interacción abajo, objetos/batería abajo-der.
+
+## Flujo de trabajo
+- Seguir el orden de desarrollo de la sección 8 del documento; probar cada etapa antes de avanzar.
+- Estado: los tres niveles están jugables de principio a fin con gráficos provisionales. Siguiente meta: ajuste por juego manual y arte definitivo.
+- No instalar paquetes nuevos (p. ej. Cinemachine) ni cambiar el pipeline o el input handling sin consultarlo.

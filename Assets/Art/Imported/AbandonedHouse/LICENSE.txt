@@ -1,0 +1,5 @@
+﻿Abandoned House Builder (YvLong) — https://yvlong.itch.io/abandonedhouse
+Free for commercial use, modification and redistribution.
+No attribution required (credit appreciated).
+Only the interior furniture slices from RundownHouse.png are used in Nivel 1.
+Ghost, clock, lights and the alternate Old house sheet are not imported.
